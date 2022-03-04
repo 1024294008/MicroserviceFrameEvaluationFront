@@ -6,3 +6,11 @@ export function getDetectionTaskList(params) {
     params,
   })
 }
+
+export function startDetect(data) {
+  return request({
+    method: 'post',
+    url: '/detection_tasks/start_detect',
+    data,
+  })
+}
