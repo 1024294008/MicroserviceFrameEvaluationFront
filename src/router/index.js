@@ -8,7 +8,7 @@ const routes = [
     component: DetectTask
   },
   {
-    path: '/detail',
+    path: '/detail/:taskId',
     component: DetectDetail
   }
 ]

@@ -3,7 +3,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'App',
   components: {
@@ -12,5 +11,10 @@ export default {
 </script>
 
 <style>
+@import 'assets/css/base.css';
 
+body {
+  background-color: #f6f6f6;
+  height: 100vh;
+}
 </style>
