@@ -1,7 +1,7 @@
 <template>
   <div class="detect-task">
     <div class="detect-task-operation-part">
-      <div class="detect-task-operation-add-task">
+      <div class="detect-task-operation-add-task mr-20">
         <el-card class="box-card">
           <template #header>
             <div class="card-header">
@@ -124,8 +124,10 @@ export default {
 
     const findDetectionTaskList = () => {
       getDetectionTaskList(taskQuery).then((res) => {
-        taskTotal.value = res.total
-        detectionTaskTable.splice(0, detectionTaskTable.length, ...res.data)
+        if ('200' === res.code) {
+          taskTotal.value = res.total
+          detectionTaskTable.splice(0, detectionTaskTable.length, ...res.data)
+        }
       })
     }
     onMounted(() => findDetectionTaskList())
@@ -165,7 +167,6 @@ export default {
 }
 .detect-task-operation-add-task {
   flex: 7 0 0;
-  margin-right: 20px;
 }
 .detect-task-operation-inspect {
   flex: 4 0 0;

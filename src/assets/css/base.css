@@ -54,3 +54,11 @@ a {
 .right {
   float: right;
 }
+
+.mr-20 {
+  margin-right: 20px;
+}
+
+.h-400 {
+  height: 400px;
+}

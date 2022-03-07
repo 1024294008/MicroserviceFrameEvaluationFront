@@ -7,6 +7,12 @@ export function getDetectionTaskList(params) {
   })
 }
 
+export function getDetectionTask(id) {
+  return request({
+    url: `/detection_tasks/${id}`,
+  })
+}
+
 export function startDetect(data) {
   return request({
     method: 'post',
