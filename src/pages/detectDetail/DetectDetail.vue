@@ -22,13 +22,13 @@
       </div>
     </el-card>
   </div>
-  <el-card class="box-card mr-20" style="width: 300px; margin-left: 25px">
+  <el-card class="box-card mr-20" style="width: 350px; margin-left: 25px">
     <template #header>
       <div class="card-header">
         <span>识别日志</span>
       </div>
     </template>
-    <div class="h-400">
+    <div class="h-400" style="overflow-y: auto; padding: 3px">
       <DetectLog :taskId="taskId"/>
     </div>
   </el-card>

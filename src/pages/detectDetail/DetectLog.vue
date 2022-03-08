@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, markRaw } from 'vue'
 import { Check, Close} from '@element-plus/icons-vue'
 import { getDetectionTask } from '../../network/detectionTask'
 
@@ -28,7 +28,7 @@ export default {
     onMounted(() => {
       getDetectionTask(taskId).then(res => {
         if ('200' === res.code) {
-          const rawLogs = res.data.log.split('\n')
+          const rawLogs = res.data.log.split('\n').filter(rawLog => '' !== rawLog.trim())
           logs.push(...rawLogs.map(rawLog => {
             const sections = rawLog.split(' ')
             const type = sections[0]
@@ -38,7 +38,7 @@ export default {
               size: 'large',
               timestamp,
               content,
-              icon: type === '[INFO]' ? Check : Close,
+              icon: type === '[INFO]' ? markRaw(Check) : markRaw(Close),
               hollow: false,
               type: type === '[INFO]' ? 'primary' : 'danger',
             }

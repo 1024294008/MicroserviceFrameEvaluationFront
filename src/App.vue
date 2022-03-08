@@ -12,9 +12,9 @@ export default {
 
 <style>
 @import 'assets/css/base.css';
-
 body {
   background-color: #f6f6f6;
   height: 100vh;
+  overflow: overlay;
 }
 </style>
