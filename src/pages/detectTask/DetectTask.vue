@@ -5,22 +5,44 @@
         <el-card class="box-card">
           <template #header>
             <div class="card-header">
-              <span>Card name</span>
-              <el-button class="button" type="text">Operation button</el-button>
+              <span>新增任务</span>
+              <div>
+                <el-button class="add-task-operation" @click="resetForm" round size="small" color="#ff9aaf">重  置</el-button>
+                <el-button class="add-task-operation" @click="submitForm" round size="small" color="#f2d36d">提交任务</el-button>
+              </div>
             </div>
           </template>
-          <div>add</div>
+          <div v-loading="taskformLoading">
+            <el-form ref="taskformRef" :rules="taskformRules" :model="taskform" label-width="120px" :inline="true">
+              <el-form-item label="任务名" prop="name" style="width: 70%">
+                <el-input v-model="taskform.name" placeholder="请输入任务名"></el-input>
+              </el-form-item>
+              <el-form-item label="Git 地址" prop="gitUrl">
+                <el-input v-model="taskform.gitUrl" placeholder="请输入 Git 地址"></el-input>
+              </el-form-item>
+              <el-form-item label="Git 分支" prop="gitBranch">
+                <el-input v-model="taskform.gitBranch" placeholder="请输入 Git 分支"></el-input>
+              </el-form-item>
+              <el-form-item label="Git 用户名">
+                <el-input v-model="taskform.gitUsername" placeholder="请输入 Git 用户名"></el-input>
+              </el-form-item>
+              <el-form-item label="Git 密码">
+                <el-input v-model="taskform.gitPassword" type="password" placeholder="请输入 Git 密码"></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
         </el-card>
       </div>
       <div class="detect-task-operation-inspect">
         <el-card class="box-card">
           <template #header>
             <div class="card-header">
-              <span>Card name</span>
-              <el-button class="button" type="text">Operation button</el-button>
+              <span>任务视图</span>
             </div>
           </template>
-          <div>inspect</div>
+          <div style="height: 100%">
+            <TaskInspect :total="taskTotal"/>
+          </div>
         </el-card>
       </div>
     </div>
@@ -29,7 +51,6 @@
         <template #header>
           <div class="card-header">
             <span>检测任务列表</span>
-            <el-button class="button" type="text">Operation button</el-button>
           </div>
         </template>
         <div>
@@ -80,8 +101,8 @@
             </el-table-column>
             <el-table-column label="操作">
               <template #default="scope">
-                <el-button plain size="small">详情</el-button>
-                <el-button type="primary" plain size="small" @click="checkDetectDetail(scope.row)">检测结果</el-button>
+                <el-button plain size="small" @click="displayTaskDetail(scope.row)" v-show="scope.row.status != 2">详情</el-button>
+                <el-button type="primary" plain size="small" @click="checkDetectDetail(scope.row)" v-show="scope.row.status != 2">检测结果</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -106,14 +127,97 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Timer } from '@element-plus/icons-vue'
-import { getDetectionTaskList } from '../../network/detectionTask'
+import { ElMessageBox } from 'element-plus'
+import { getDetectionTaskList, startDetect } from '../../network/detectionTask'
+import TaskInspect from './TaskInspect.vue'
 
 export default {
   components: {
     Timer,
+    TaskInspect,
   },
   setup() {
     const router = useRouter()
+    const taskformRef = ref(null)
+    const taskformLoading = ref(false)
+
+    const taskform = reactive({
+      name: '',
+      gitUrl: '',
+      gitUsername: '',
+      gitPassword: '',
+    })
+    const taskformRules = reactive({
+      name: [
+        {
+          required: true,
+          message: '请输入任务名',
+          trigger: 'blur',
+        }
+      ],
+      gitUrl: [
+        {
+          required: true,
+          message: '请输入 Git 地址',
+          trigger: 'blur',
+        }
+      ],
+      gitBranch: [
+        {
+          required: true,
+          message: '请输入 Git 分支',
+          trigger: 'blur',
+        }
+      ]
+    })
+
+    const pollRequest = () => {
+      let isExcuting = detectionTaskTable.filter(detectionTask => detectionTask.status === 2).length > 0
+      if (isExcuting) {
+        let timer = setInterval(() => {
+          if (!isExcuting) clearInterval(timer)
+          getDetectionTaskList(taskQuery).then((res) => {
+          if ('200' === res.code) {
+            taskTotal.value = res.total
+            detectionTaskTable.splice(0, detectionTaskTable.length, ...res.data)
+            isExcuting = detectionTaskTable.filter(detectionTask => detectionTask.status === 2).length > 0
+          }
+        })
+        }, 2000)
+      }
+    }
+    const findDetectionTaskList = () => {
+      getDetectionTaskList(taskQuery).then((res) => {
+        if ('200' === res.code) {
+          taskTotal.value = res.total
+          detectionTaskTable.splice(0, detectionTaskTable.length, ...res.data)
+          pollRequest()
+        }
+      })
+    }
+
+    const submitForm = () => {
+      if (!taskformRef) return
+      taskformRef.value.validate((valid) => {
+        if (valid) {
+          taskformLoading.value = true
+          setTimeout(() => {
+            taskformLoading.value = false
+            resetForm()
+          }, 1000)
+          startDetect(taskform)
+          setTimeout(() => {
+            findDetectionTaskList()
+          }, 500)
+        } else {
+          return false
+        }
+      })
+    }
+    const resetForm = () => {
+      if (!taskformRef) return
+      taskformRef.value.resetFields()
+    }
 
     const detectionTaskTable = reactive([])
     const taskQuery = reactive({
@@ -122,14 +226,6 @@ export default {
     })
     const taskTotal = ref(0)
 
-    const findDetectionTaskList = () => {
-      getDetectionTaskList(taskQuery).then((res) => {
-        if ('200' === res.code) {
-          taskTotal.value = res.total
-          detectionTaskTable.splice(0, detectionTaskTable.length, ...res.data)
-        }
-      })
-    }
     onMounted(() => findDetectionTaskList())
 
     const filterTag = (value, row) => value === row.type
@@ -140,12 +236,34 @@ export default {
       })
     }
 
+    const displayTaskDetail = (row) => {
+      console.log(row)
+      ElMessageBox.alert(`
+        任务ID：${row.id}<br/>
+        任务名称：${row.name}<br/>
+        执行状态：${row.status === 2 ? '执行中' : row.status === 1 ? '失败' : '成功'}<br/>
+        架构类型：${row.type === 2 ? '微服务架构' : row.type === 1 ? '其他架构' : '未知'}<br/>
+        开始时间：${row.startTime}<br/>
+        结束时间：${row.endTime}<br/>
+        Git 地址：${row.gitUrl}<br/>
+        Git 分支：${row.gitBranch}<br/>
+        Git 用户名：${row.gitUsername}<br/>
+      `, '任务详情', { dangerouslyUseHTMLString: true, customStyle: 'width: 45%' })
+    }
+
     return {
+      taskform,
+      taskformRules,
+      taskformRef,
+      taskformLoading,
+      submitForm,
+      resetForm,
       taskQuery,
       taskTotal,
       detectionTaskTable,
       findDetectionTaskList,
       filterTag,
+      displayTaskDetail,
       checkDetectDetail,
     }
   },
@@ -171,6 +289,9 @@ export default {
 .detect-task-operation-inspect {
   flex: 4 0 0;
 }
+::v-deep(.el-card__body){
+  height: 80%;
+}
 .detect-task-table-part {
   overflow: hidden;
   flex: 3 0 0;
@@ -186,5 +307,9 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.add-task-operation {
+  color: white;
+  width: 75px;
 }
 </style>
