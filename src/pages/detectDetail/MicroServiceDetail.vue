@@ -11,12 +11,11 @@
     >
       <el-table-column label="服务名" show-overflow-tooltip width="200" prop="serviceName">
       </el-table-column>
-      <el-table-column label="入口模块" show-overflow-tooltip width="200">
+      <el-table-column label="入口模块" show-overflow-tooltip width="250">
         <template #default="scope">
           <el-tag
             v-show="!!scope.row.moduleName && scope.row.moduleName.split(':').length === 2"
             style="margin-right: 3px"
-            type="primary"
             disable-transitions
             >{{ scope.row.moduleName.split(':')[0] }}</el-tag
           >

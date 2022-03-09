@@ -4,7 +4,6 @@
       <template #header>
         <div class="card-header">
           <span>模块依赖图</span>
-          <el-button class="button" type="text">Operation button</el-button>
         </div>
       </template>
       <div class="h-400">
@@ -15,10 +14,10 @@
       <template #header>
         <div class="card-header">
           <span>服务调用关系图</span>
-          <el-button class="button" type="text">Operation button</el-button>
         </div>
       </template>
-      <div>
+      <div class="h-400">
+        <CallRelation :taskId="taskId"/>
       </div>
     </el-card>
   </div>
@@ -53,12 +52,14 @@
 <script>
 import { useRoute } from 'vue-router'
 import DependencyRelation from '../detectDetail/DependencyRelation.vue'
+import CallRelation from '../detectDetail/CallRelation.vue'
 import MicroServiceDetail from './MicroServiceDetail.vue'
 import DetectLog from '../detectDetail/DetectLog.vue'
 
 export default {
   components: {
     DependencyRelation,
+    CallRelation,
     MicroServiceDetail,
     DetectLog,
   },

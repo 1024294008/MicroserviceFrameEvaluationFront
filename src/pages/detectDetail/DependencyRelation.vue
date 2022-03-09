@@ -60,6 +60,9 @@ export default {
                     left: '7%',
                     bottom: '1%',
                     right: '20%',
+                    itemStyle: {
+                      color: '#1ba784',
+                    },
                     symbol: (value, params) => { return params.data.value === 'UsedJar' || params.data.value === 'UnusedJar'
                       ? 'circle' : 'rect'},
                     symbolSize: [50, 25],
@@ -100,7 +103,7 @@ export default {
                       ? 'circle' : 'rect'},
                     symbolSize: [50, 25],
                     itemStyle: {
-                      color: '#b0c4de'
+                      color: '#1ba784',
                     },
                     roam: true,
                     label: {
