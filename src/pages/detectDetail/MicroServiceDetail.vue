@@ -11,20 +11,42 @@
     >
       <el-table-column label="服务名" show-overflow-tooltip width="200" prop="serviceName">
       </el-table-column>
-      <el-table-column label="入口模块" show-overflow-tooltip width="200" prop="moduleName">
+      <el-table-column label="入口模块" show-overflow-tooltip width="200">
+        <template #default="scope">
+          <el-tag
+            v-show="!!scope.row.moduleName && scope.row.moduleName.split(':').length === 2"
+            style="margin-right: 3px"
+            type="primary"
+            disable-transitions
+            >{{ scope.row.moduleName.split(':')[0] }}</el-tag
+          >
+          <el-tag
+            type="success"
+            disable-transitions
+            >{{ scope.row.moduleName.split(':')[1] || scope.row.moduleName }}</el-tag
+          >
+        </template>
       </el-table-column>
-      <el-table-column label="端口号" show-overflow-tooltip prop="port">
+      <el-table-column label="端口号" show-overflow-tooltip>
+        <template #default="scope">
+          <el-tag
+            v-show="!!scope.row.port"
+            type="danger"
+            disable-transitions
+            >{{ scope.row.port }}</el-tag
+          >
+        </template>
       </el-table-column>
       <el-table-column label="启动类" show-overflow-tooltip width="200" prop="entryClass">
       </el-table-column>
-      <el-table-column label="上下文路径" width="200" show-overflow-tooltip>
+      <el-table-column label="上下文路径" width="150" show-overflow-tooltip>
         <template #default="scope">
           <div style="display: flex; align-items: center;">
             <span style="margin-left: 10px">{{ scope.context || '/' }}</span>
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="注册地址" show-overflow-tooltip prop="registryUrl">
+      <el-table-column label="注册地址" width="200" show-overflow-tooltip prop="registryUrl">
       </el-table-column>
     </el-table>
     <div class="interface-table" v-show="showInterfaceTable">
@@ -38,6 +60,19 @@
         <el-table-column label="所属控制器类" show-overflow-tooltip width="200" prop="belongClass">
         </el-table-column>
         <el-table-column label="请求类型" show-overflow-tooltip width="100" prop="requestType">
+          <template #default="scope">
+            <el-tag
+              style="color: white; border: none"
+              v-show="!!scope.row.requestType"
+              :color="'Get' === scope.row.requestType
+                ? '#0f6ab4' : 'Post' === scope.row.requestType
+                ? '#10a54a' : 'Put' === scope.row.requestType
+                ? '#c5862b' : 'Delete' === scope.row.requestType
+                ? '#a41e22' : '#ffd20f'"
+              disable-transitions
+              >{{ scope.row.requestType }}</el-tag
+            >
+          </template>
         </el-table-column>
         <el-table-column label="请求路径" show-overflow-tooltip width="200" prop="requestPath">
         </el-table-column>
