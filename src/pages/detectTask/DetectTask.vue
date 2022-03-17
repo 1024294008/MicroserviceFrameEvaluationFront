@@ -237,7 +237,6 @@ export default {
     }
 
     const displayTaskDetail = (row) => {
-      console.log(row)
       ElMessageBox.alert(`
         任务ID：${row.id}<br/>
         任务名称：${row.name}<br/>

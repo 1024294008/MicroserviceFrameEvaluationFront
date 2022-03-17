@@ -20,6 +20,16 @@
         <CallRelation :taskId="taskId"/>
       </div>
     </el-card>
+    <el-card class="box-card">
+      <template #header>
+        <div class="card-header">
+          <span>适应性评估</span>
+        </div>
+      </template>
+      <div class="h-400">
+        <AdaptationEvaluation :taskId="taskId"/>
+      </div>
+    </el-card>
   </div>
   <div class="dependency-relation-bottom">
     <el-card class="box-card mr-20" style="flex: 1 0 0;width: 350px;">
@@ -51,10 +61,11 @@
 
 <script>
 import { useRoute } from 'vue-router'
-import DependencyRelation from '../detectDetail/DependencyRelation.vue'
-import CallRelation from '../detectDetail/CallRelation.vue'
+import DependencyRelation from './DependencyRelation.vue'
+import CallRelation from './CallRelation.vue'
 import MicroServiceDetail from './MicroServiceDetail.vue'
-import DetectLog from '../detectDetail/DetectLog.vue'
+import DetectLog from './DetectLog.vue'
+import AdaptationEvaluation from './AdaptationEvaluation.vue'
 
 export default {
   components: {
@@ -62,6 +73,7 @@ export default {
     CallRelation,
     MicroServiceDetail,
     DetectLog,
+    AdaptationEvaluation,
   },
   setup() {
     const route = useRoute()
