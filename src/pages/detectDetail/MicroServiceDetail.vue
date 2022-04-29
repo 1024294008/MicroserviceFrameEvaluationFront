@@ -6,7 +6,8 @@
       class="service-table"
       border
       highlight-current-row
-      max-height="400"
+      max-height="300"
+      style="width: 180px"
       @current-change="dispalyInterfaceDetail"
     >
       <el-table-column label="服务名" show-overflow-tooltip width="200" prop="serviceName">
@@ -50,11 +51,12 @@
     </el-table>
     <div class="interface-table" v-show="showInterfaceTable">
       <el-button class="interface-close" circle :icon="Close" @click="closeInterfaceTable"></el-button>
+      <span>{{interfaceListTable.length}}</span>
       <el-table
         :data="interfaceListTable"
         v-loading="interfaceTableLoading"
         border
-        max-height="400"
+        max-height="300"
       >
         <el-table-column label="所属控制器类" show-overflow-tooltip width="200" prop="belongClass">
         </el-table-column>

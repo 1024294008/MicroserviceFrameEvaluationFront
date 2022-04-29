@@ -15,9 +15,12 @@ export default {
     const { taskId } = props
 
     const convertCallGraphNodes = (nodes) => {
-      return nodes.map(node => {
+      const names = [...new Set(nodes.map(node => {
+        return node.belongService
+      }))]
+      return names.map(name => {
         return {
-          name: node.belongService,
+          name,
         }
       })
     }
@@ -48,6 +51,18 @@ export default {
       return result
     }
 
+    const convertCallGraphLinksToNodes = (links) => {
+      const names = []
+      links.forEach(link => {
+        names.push(link.source, link.target)
+      })
+      return [...new Set(names)].map(name => {
+        return {
+          name,
+        }
+      })
+    }
+
     onMounted(() => {
       const chart = echars.init(document.getElementById('callRelation'))
       getCallRelation(taskId).then(res => {
@@ -75,7 +90,8 @@ export default {
                     fontSize: 20
                   },
                   layout: 'circular',
-                  nodes: convertCallGraphNodes(res.data['call_feature'].nodes),
+                  // nodes: convertCallGraphNodes(res.data['call_feature'].nodes),
+                  nodes: convertCallGraphLinksToNodes(res.data['call_feature'].links),
                   links: convertCallGraphLinks(res.data['call_feature'].links),
                   lineStyle: {
                     opacity: 0.9,
@@ -97,5 +113,7 @@ export default {
 #callRelation {
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>

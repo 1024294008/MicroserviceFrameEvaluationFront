@@ -203,7 +203,7 @@ export default {
           taskformLoading.value = true
           setTimeout(() => {
             taskformLoading.value = false
-            resetForm()
+            // resetForm()
           }, 1000)
           startDetect(taskform)
           setTimeout(() => {

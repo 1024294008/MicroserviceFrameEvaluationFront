@@ -65,7 +65,7 @@ export default {
                     },
                     symbol: (value, params) => { return params.data.value === 'UsedJar' || params.data.value === 'UnusedJar'
                       ? 'circle' : 'rect'},
-                    symbolSize: [50, 25],
+                    symbolSize: [10, 6],
                     label: {
                       position: 'left',
                       verticalAlign: 'middle',
@@ -142,5 +142,7 @@ export default {
 #dependencyRelation {
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>

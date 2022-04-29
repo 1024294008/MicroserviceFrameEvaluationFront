@@ -20,7 +20,7 @@ export default {
           chart.setOption(
             {
               title: {
-                text: '各子服务适应性占比图',
+                text: '',
                 left: 'center',
                 textStyle: {
                 }
@@ -61,5 +61,7 @@ export default {
 #adaptationEvaluation {
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>
